@@ -3,6 +3,7 @@ from tkinter import ttk
 import json
 
 
+
 class Subject:
     def __init__(self, name):
         self.name = name
