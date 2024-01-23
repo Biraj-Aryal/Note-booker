@@ -64,64 +64,73 @@ class App:
         padx = 10
         pady = 5
 
+        # Initialize info_text
+        self.info_text = tk.Text(root, height=20, width=120, font=text_font, wrap=tk.WORD)
+        self.info_text.grid(row=10, column=0, columnspan=2, padx=padx, pady=pady)
+
+        # Add subject
+        self.add_subject_button = ttk.Button(root, text="Add a new subject", command=self.dummy_function)
+        self.add_subject_button.grid(row=0, column=1, padx=padx, pady=pady)
+
+        # subject
         self.subject_label = ttk.Label(root, text="Subjects:")
-        self.subject_label.grid(row=0, column=0, sticky=tk.W, padx=padx, pady=pady)
+        self.subject_label.grid(row=1, column=0, sticky=tk.W, padx=padx, pady=pady)
 
         self.subject_combobox = ttk.Combobox(root, values=["Governance Systems"], width=30, state="readonly")
-        self.subject_combobox.grid(row=0, column=1, padx=padx, pady=pady)
+        self.subject_combobox.grid(row=1, column=1, padx=padx, pady=pady)
         self.subject_combobox.bind("<<ComboboxSelected>>", self.load_subject_info)
+
+        # section
+        self.section_label = ttk.Label(root, text="Sections:")
+        self.section_label.grid(row=2, column=0, sticky=tk.W, padx=10, pady=5)
+
+        self.section_combobox = ttk.Combobox(root, values=[], width=40)
+        self.section_combobox.grid(row=2, column=1, padx=10, pady=5)
+        self.section_combobox.bind("<<ComboboxSelected>>", self.load_section_info)
+
+        # chapter
+        self.chapter_label = ttk.Label(root, text="Chapters:")
+        self.chapter_label.grid(row=3, column=0, sticky=tk.W, padx=10, pady=5)
+
+        self.chapter_combobox = ttk.Combobox(root, values=[], width=40)
+        self.chapter_combobox.grid(row=3, column=1, padx=10, pady=5)
+        self.chapter_combobox.bind("<<ComboboxSelected>>", self.display_selected_chapter)
 
 
         # Load questions and answers from file
         self.load_questions_and_answers()
-
         # Create the subject
         self.create_governance_systems_subject()
 
-        self.section_label = ttk.Label(root, text="Sections:")
-        self.section_label.grid(row=1, column=0, sticky=tk.W, padx=10, pady=5)
-
-        self.section_combobox = ttk.Combobox(root, values=[], width=40)
-        self.section_combobox.grid(row=1, column=1, padx=10, pady=5)
-        self.section_combobox.bind("<<ComboboxSelected>>", self.load_section_info)
-
-        self.chapter_label = ttk.Label(root, text="Chapters:")
-        self.chapter_label.grid(row=2, column=0, sticky=tk.W, padx=10, pady=5)
-
-        self.chapter_combobox = ttk.Combobox(root, values=[], width=40)
-        self.chapter_combobox.grid(row=2, column=1, padx=10, pady=5)
-        self.chapter_combobox.bind("<<ComboboxSelected>>", self.display_selected_chapter)
-
+        # queston
         self.select_question_label = ttk.Label(root, text="Select Question:")
-        self.select_question_label.grid(row=3, column=0, sticky=tk.W, padx=10, pady=5)
+        self.select_question_label.grid(row=4, column=0, sticky=tk.W, padx=10, pady=5)
 
         self.select_question_combobox = ttk.Combobox(root, values=[], width=50)
-        self.select_question_combobox.grid(row=3, column=1, padx=10, pady=5)
+        self.select_question_combobox.grid(row=4, column=1, padx=10, pady=5)
         self.select_question_combobox.bind("<<ComboboxSelected>>", self.display_selected_question)
 
         self.empty_label = ttk.Label(root, text="")
-        self.empty_label.grid(row=4, column=0)
+        self.empty_label.grid(row=5, column=0)
 
         self.question_label = ttk.Label(root, text="Question:")
-        self.question_label.grid(row=5, column=0, sticky=tk.W, padx=10, pady=5)
+        self.question_label.grid(row=6, column=0, sticky=tk.W, padx=10, pady=5)
 
         self.question_entry = ttk.Entry(root, width=50)
-        self.question_entry.grid(row=5, column=1, padx=10, pady=5)
+        self.question_entry.grid(row=6, column=1, padx=10, pady=5)
 
         self.answer_label = ttk.Label(root, text="Answer:")
-        self.answer_label.grid(row=6, column=0, sticky=tk.W, padx=10, pady=5)
+        self.answer_label.grid(row=7, column=0, sticky=tk.W, padx=10, pady=5)
 
         self.answer_entry = ttk.Entry(root, width=50)
-        self.answer_entry.grid(row=6, column=1, padx=10, pady=5)
+        self.answer_entry.grid(row=7, column=1, padx=10, pady=5)
 
         self.add_question_button = ttk.Button(root, text="Add or Edit an Entry", command=self.add_question)
-        self.add_question_button.grid(row=7, column=1, padx=padx, pady=pady)
+        self.add_question_button.grid(row=8, column=1, padx=padx, pady=pady)
 
         self.delete_button = ttk.Button(root, text="Delete an Entry", command=self.delete_question)
-        self.delete_button.grid(row=8, column=1, padx=padx, pady=pady)
+        self.delete_button.grid(row=9, column=1, padx=padx, pady=pady)
 
-        self.info_text = tk.Text(root, height=20, width=120, font=text_font, wrap=tk.WORD)
-        self.info_text.grid(row=9, column=0, columnspan=2, padx=padx, pady=pady)
 
         # Add horizontal and vertical scrollbars to the Text widget
         scroll_y = ttk.Scrollbar(root, command=self.info_text.yview)
@@ -133,61 +142,37 @@ class App:
         self.info_text.tag_configure("green", foreground="green")
 
 
+    def dummy_function(self):
+        print("Button clicked but does nothing.")
+
+
     def create_governance_systems_subject(self):
-        self.subject_1 = Subject("Governance Systems")
+        # Load subjects data from JSON
+        with open("subjects_data.json", 'r') as file:
+            subjects_data = json.load(file)
 
-        # Section (A) | State and Governance
-        section_a_chapters = [
-            {"name": "1.1 Fundamentals of governance: concept, context and characteristics", "questions": []},
-            {"name": "1.2 Political and administrative structures of governance", "questions": []},
-            {"name": "1.3 Right to information and transparency", "questions": []},
-            {"name": "1.4 Nation building and state building", "questions": []},
-            {"name": "1.5 Governance systems in Nepal", "questions": []},
-            {"name": "1.6 National security management", "questions": []},
-            {"name": "1.7 Multi-level governance and Nepal", "questions": []}
-        ]
-        self.subject_1.add_section("Section (A) | State and Governance", section_a_chapters)
+        for subject_name, subject_data in subjects_data["subjects"].items():
+            subject_instance = Subject(subject_name)
 
-        # Section (B) | Constitution and Law
-        section_b_chapters = [
-            {"name": "2.1 Constitutionalism", "questions": []},
-            {"name": "2.2 Constitutional development in Nepal", "questions": []},
-            {"name": "2.3 Present constitution of Nepal", "questions": []},
-            {"name": "2.4 Human rights", "questions": []},
-            {"name": "2.5 Civic sense, duties and responsibilities of people", "questions": []},
-            {"name": "2.6 Sources of law- and law-making process in Nepal", "questions": []},
-            {"name": "2.7 Rule of law, democratic values and norms, inclusion, proportional representation and affirmative action", "questions": []}
-        ]
-        self.subject_1.add_section("Section (B) | Constitution and Law", section_b_chapters)
+            for section_name, section_data in subject_data["sections"].items():
+                section_chapters = section_data["chapters"]
+                subject_instance.add_section(section_name, section_chapters)
 
-        # Section (C) | Public Service and Public Management
-        section_c_chapters = [
-            {"name": "3.1 Concept, functions, characteristics and role of public service", "questions": []},
-            {"name": "3.2 Public Service delivery", "questions": []},
-            {"name": "3.3 Political neutrality, commitment, transparency and accountability", "questions": []},
-            {"name": "3.4 Utilization of public funds, ethics and morality", "questions": []},
-            {"name": "3.5 Public management, civil service and bureaucracy", "questions": []},
-            {"name": "3.6 Public policy: formulation process and analysis", "questions": []},
-            {"name": "3.7 Public Service Charter", "questions": []},
-            {"name": "3.8 E-governance", "questions": []}
-        ]
-        self.subject_1.add_section("Section (C) | Public Service and Public Management", section_c_chapters)
+            self.subjects[subject_name] = subject_instance
 
-        # Section (D) | Resource Management and Planning
-        section_d_chapters = [
-            {"name": "4.1 Human Resource Management: procurement, development, utilization and maintenance", "questions": []},
-            {"name": "4.2 Public financial management: planning and budgeting system in Nepal", "questions": []},
-            {"name": "4.3 Government accounting and auditing system in Nepal", "questions": []},
-            {"name": "4.4 Financial management and social accountability", "questions": []},
-            {"name": "4.5 Development planning and current periodic plan", "questions": []},
-            {"name": "4.6 Participatory planning and development", "questions": []}
-        ]
-        self.subject_1.add_section("Section (D) | Resource Management and Planning", section_d_chapters)
+        # Add the new subject "Contemporary Issues" to the subjects dictionary
+        if "Contemporary Issues" not in self.subjects:
+            contemporary_issues_instance = Subject("Contemporary Issues")
+            self.subjects["Contemporary Issues"] = contemporary_issues_instance
 
-        self.subjects = {"Governance Systems": self.subject_1}
-
-        # Load questions and answers for the selected subject
+        # Load questions and answers for both subjects
         self.load_questions_and_answers()
+
+        # Set the initial subject in the combobox
+        self.subject_combobox['values'] = list(self.subjects.keys())
+        self.subject_combobox.set("Governance Systems")
+        self.load_subject_info(None)  # Load initial subject info
+
 
     def load_subject_info(self, event):
         selected_subject = self.subject_combobox.get()
