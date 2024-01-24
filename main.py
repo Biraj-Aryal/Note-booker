@@ -1,7 +1,106 @@
+from tkinter import Text, Button, Frame, simpledialog, ACTIVE, LEFT
 import tkinter as tk
 from tkinter import ttk
 import json
+import tkinter.simpledialog as simpledialog
+from resources.subject_editor import append_text_to_existing_json, save_json_to_file, load_json_from_file
+from tkinter import Tk, Text, ttk, messagebox
 
+import os
+
+resource_path = "/Users/birajaryal/programming_gita/loksewa/resources"
+json_name = "subjects_data.json"
+
+json_path = os.path.join(resource_path,json_name)
+
+
+class CustomDialog(simpledialog.Dialog):
+    def body(self, master):
+        self.title("Add a New Subject")
+
+        # Pre-written text to be displayed in grey
+        prewritten_text = '''subject : Contemporary Law and Practices
+
+section (A) | Law and Justice Related Contemporary Issues
+1.1 Constitution and Constitutionalism
+1.2 Fundamental aspects of Civil and Criminal Code
+1.3 Human RIghts & International Law
+1.4 Corruption, Organized Crime and Money Laundering
+1.5 Judicial Activism and Public Interest Litigation
+1.6 Alternative Dispute Resolution (ADR)
+1.7 Concept of Environmental Justice
+1.8 Consumer's Right Protection
+1.9 Gender Justice and Domestic Violence
+1.10 Concept of Victimology
+
+section (B) | Law Drafting and Other legal aspects
+2.1 Concept of drafting and philosophical consent of act, rule notified order and ordinance
+2.2 Construction of treaty agreement
+2.3 Editing of notice published in Nepal Gazette
+2.4 Legislative Procedures
+2.5 Delegated Legislation
+2.6 Intellectual Property Rights
+2.7 Contract
+2.8 Writ 
+2.9 Judicial rights of Administrative bodies
+2.10 Civil Service Act
+
+section (C) | Theoretical and Practical Issues of Law Related to Government Attorney
+3.1 Attorney General
+3.2 Investigation and Prosecution of State Criminal Cases
+3.3 Bail and Witness Examination
+3.4 Legal Opinion
+3.5 Appeal and Defense State Party Criminal Case
+3.6 Art of Pleading (Legal Advocacy) and Pleading Management
+3.7 Professional Skill (competency) and Code of Conduct of Government Attorney
+3.8 Comparative study on the role of Government Attorney
+3.9 Civil Crimes Code, 2074
+3.10 Civil Criminal Procedure Code, 2074
+3.11 Criminal Offenses (Sentencing and Enforcement) Act, 2074
+3.12 Government Attorney Regulation
+
+section (D) | Court Related Functions and Procedures
+4.1 Locus Standi, Limitation
+4.2 Jurisdiction of Court of Nepal
+4.3 Registration and Endorsement of Document
+4.4 Court Fee, Bail and Surety
+4.5 Statement or Deposition, Attorney and Sakarnama
+4.6 Interlocutory order and Interim order
+4.7 Examination of Evidence
+4.8 Theoretical & Practical Knowledge Regarding Judgement 
+4.9 Appeal and Execution of Judgement
+4.10 Administration of Justice & Judicial Service Commission
+4.11 Supreme court regulation, High Court regulation and District court regulation
+4.12 Nepal Judicial Service (Formation, Group, Category, Division, Appointment) Rules, 2051
+'''
+
+        self.text = Text(master, height=50, width=80, wrap=tk.WORD)
+        self.text.pack(padx=10, pady=10)
+        
+        # Insert pre-written text in grey
+        self.text.insert("1.0", prewritten_text)
+        return self.text
+
+    def on_return(self, event):
+        # Insert a new line without closing the dialog
+        self.text.insert("end", "\n")
+
+    def buttonbox(self):
+        # Override the buttonbox method to bind the "Return" key to the window
+        box = Frame(self)
+        w = Button(box, text="OK", width=10, command=self.ok, default=ACTIVE)
+        w.pack(side=LEFT, padx=5, pady=5)
+
+        # Add a "Cancel" button to close the dialog
+        cancel_button = Button(box, text="Cancel", width=10, command=self.cancel)
+        cancel_button.pack(side=LEFT, padx=5, pady=5)
+
+        self.bind("<Return>", self.on_return)  # Bind Return key
+        box.pack()
+
+    def apply(self):
+        # Get the result as the text content
+        self.result = self.text.get("1.0", "end-1c")
 
 
 class Subject:
@@ -44,6 +143,8 @@ class Subject:
             pass  # Ignore if the file doesn't exist
 
 class App:
+
+
     def __init__(self, root):
         self.root = root
         self.root.title("Subject Explorer")
@@ -64,13 +165,20 @@ class App:
         padx = 10
         pady = 5
 
+
         # Initialize info_text
         self.info_text = tk.Text(root, height=20, width=120, font=text_font, wrap=tk.WORD)
         self.info_text.grid(row=10, column=0, columnspan=2, padx=padx, pady=pady)
 
-        # Add subject
-        self.add_subject_button = ttk.Button(root, text="Add a new subject", command=self.dummy_function)
+        # # Add subject
+        self.add_subject_button = ttk.Button(root, text="Add a new subject", command=self.add_subject)
         self.add_subject_button.grid(row=0, column=1, padx=padx, pady=pady)
+
+
+        # Add subject deletion button
+        self.delete_subject_button = ttk.Button(root, text="Delete selected subject", command=self.delete_subject)
+        self.delete_subject_button.grid(row=0, column=0, padx=padx, pady=pady)
+
 
         # subject
         self.subject_label = ttk.Label(root, text="Subjects:")
@@ -113,22 +221,22 @@ class App:
         self.empty_label = ttk.Label(root, text="")
         self.empty_label.grid(row=5, column=0)
 
-        self.question_label = ttk.Label(root, text="Question:")
+        self.question_label = ttk.Label(root, text="Topic:")
         self.question_label.grid(row=6, column=0, sticky=tk.W, padx=10, pady=5)
 
         self.question_entry = ttk.Entry(root, width=50)
         self.question_entry.grid(row=6, column=1, padx=10, pady=5)
 
-        self.answer_label = ttk.Label(root, text="Answer:")
+        self.answer_label = ttk.Label(root, text="Description:")
         self.answer_label.grid(row=7, column=0, sticky=tk.W, padx=10, pady=5)
 
         self.answer_entry = ttk.Entry(root, width=50)
         self.answer_entry.grid(row=7, column=1, padx=10, pady=5)
 
-        self.add_question_button = ttk.Button(root, text="Add or Edit an Entry", command=self.add_question)
+        self.add_question_button = ttk.Button(root, text="Add or Edit a Topic", command=self.add_question)
         self.add_question_button.grid(row=8, column=1, padx=padx, pady=pady)
 
-        self.delete_button = ttk.Button(root, text="Delete an Entry", command=self.delete_question)
+        self.delete_button = ttk.Button(root, text="Delete a Topic", command=self.delete_question)
         self.delete_button.grid(row=9, column=1, padx=padx, pady=pady)
 
 
@@ -142,13 +250,72 @@ class App:
         self.info_text.tag_configure("green", foreground="green")
 
 
-    def dummy_function(self):
-        print("Button clicked but does nothing.")
+    def delete_subject(self):
+        # Get the selected subject
+        selected_subject = self.subject_combobox.get()
+
+        # Ensure a subject is selected
+        if not selected_subject:
+            messagebox.showinfo("Error", "Please select a subject to delete.")
+            return
+
+        # Confirm deletion with the user
+        confirmation = messagebox.askyesno("Delete Subject", f"Are you sure you want to delete the subject '{selected_subject}'?")
+
+        if confirmation:
+            # Delete the selected subject from the dictionary
+            del self.subjects[selected_subject]
+
+            # Remove the subject from the 'json_path' file
+            existing_json = load_json_from_file(json_path)
+            existing_json["subjects"].pop(selected_subject, None)
+            
+            # Save the modified data back to the subjects_data.json file
+            save_json_to_file(existing_json, json_path)
+
+            # Reload the subjects in the combobox
+            self.subject_combobox['values'] = list(existing_json["subjects"].keys())
+
+            # Clear the info_text widget
+            self.info_text.delete(1.0, tk.END)
+
+            # Reset the comboboxes
+            self.subject_combobox.set("")
+            self.section_combobox.set("")
+            self.chapter_combobox.set("")
+            self.select_question_combobox.set("")
+
+            # Clear the entry fields
+            self.question_entry.delete(0, tk.END)
+            self.answer_entry.delete(0, tk.END)
+
+            messagebox.showinfo("Success", f"The subject '{selected_subject}' has been deleted.")
+
+    def add_subject(self):
+        # Use the custom dialog to get a larger text field
+        dialog = CustomDialog(self.root)
+        new_subject_data = dialog.result
+
+        if new_subject_data:
+            # Process the entered data and update the JSON
+            existing_json = load_json_from_file(json_path)
+            updated_json = append_text_to_existing_json(existing_json, new_subject_data)
+            save_json_to_file(updated_json, json_path)
+
+            # Reload the subjects in the combobox
+            self.subject_combobox['values'] = list(updated_json["subjects"].keys())
+
+            # Restart the application by destroying the current window and creating a new one
+            self.root.destroy()
+            root = tk.Tk()
+            app = App(root)
+            root.mainloop()
+
 
 
     def create_governance_systems_subject(self):
         # Load subjects data from JSON
-        with open("subjects_data.json", 'r') as file:
+        with open(json_path, 'r') as file:
             subjects_data = json.load(file)
 
         for subject_name, subject_data in subjects_data["subjects"].items():
@@ -232,7 +399,7 @@ class App:
                                         self.select_question_combobox.set(question_names[0] if question_names else "")
                                         self.display_selected_question(None)  # Load initial selected question info
                                     else:
-                                        self.info_text.insert(tk.END, "No questions available for this chapter.")
+                                        self.info_text.insert(tk.END, "No topics available for this chapter.")
                                     # Adjust the width of the Text widget
                                     new_width = 120  # Adjust this value according to your needs
                                     self.info_text.config(width=new_width)
@@ -261,9 +428,9 @@ class App:
 
                                         self.info_text.delete(1.0, tk.END)
                                         self.info_text.insert(tk.END, f"{selected_chapter}\n\n")
-                                        self.info_text.insert(tk.END, f"Question: ", "orange")
+                                        self.info_text.insert(tk.END, f"Topic: ", "orange")
                                         self.info_text.insert(tk.END, f"{q['question']}\n", "normal")
-                                        self.info_text.insert(tk.END, f"Answer: ", "green")
+                                        self.info_text.insert(tk.END, f"Description: ", "green")
                                         self.info_text.insert(tk.END, f"{q['answer']}\n\n", "normal")
 
 
@@ -305,7 +472,7 @@ class App:
             if subject_instance:
                 # Assuming the filename is based on the subject name
                 filename = f"{selected_subject.replace(' ', '_')}_data.json"
-                subject_instance.load_from_file(filename)
+                subject_instance.load_from_file(os.path.join(resource_path, filename))
 
     def save_questions_and_answers(self):
         selected_subject = self.subject_combobox.get()
@@ -314,7 +481,7 @@ class App:
             if subject_instance:
                 # Assuming the filename is based on the subject name
                 filename = f"{selected_subject.replace(' ', '_')}_data.json"
-                subject_instance.save_to_file(filename)
+                subject_instance.save_to_file(os.path.join(resource_path, filename))
 
     def add_question(self):
         selected_subject = self.subject_combobox.get()

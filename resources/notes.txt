@@ -1,0 +1,66 @@
+Notes:
+
+How to use this program:
+- Run main.py to load subjects, interact with each chapters of each sections of each subjects. We can select a chapter and then add a question and and answer there and click "add entry" or edit it using the same button or delete it. The record will stay even after restarting the app.
+
+How to add new subjects:
+- the format of the text below should be used.
+
+How the data is stored:
+Data for subject structure is in a single json file whereas data for topics within each subject are on their own json files.
+
+Format for the text:
+Note: the horizontal line is not included in the format but everything below it is.
+
+
+------------------------------------------------------------------------------------------------
+subject : Contemporary Issues
+
+section (A) | Social Issues
+1.1 Social disputes and conflict
+1.2 Social justice and equality
+1.3 Social and cultural transformationa
+1.4 Distributive justice of resources: disparities and marginalization
+1.5 Social protection, social securitu and social responsibility
+1.6 Cultural diversity and social mobilization
+1.7 Populaiton
+1.8 Organized Crime
+1.9 Food sovereignty and security
+
+section (B) | Economic Issues
+2.1 Economic growth and Economic development
+2.2 Major aspects of economic development
+2.3 Role of public sector, private sector and cooperative in economic development
+2.4 Foreign assistance and international co-operation
+2.5 Foreign Investment: portfolio and directory
+2.6 Technology transfer including intellectual property rights
+2.7 Trade, market and labour liberalization
+2.8 Economic diplomacy
+2.9 Poverty and unemployment
+
+section (C) | Developmental Issues
+3.1 Human development
+3.2 Infrastructure development
+3.3 Sustainable development
+3.4 Role of state and non-state actors in development process
+3.5 Peace and conflict sensitive development
+3.6 Decentralization and local self-governance
+3.7 Citizen engagement in development
+3.8 Partnership development and community based development
+3.9 Role of information and Communication Technology (ICT) in development
+3.10 Globalization and development
+
+section (D) | Environmental Issues
+4.1 Ecosystem
+4.2 Bio-diversity and conservation
+4.3 Climate change and carbon Trade
+4.4 Environment degradation
+4.5 Deforestation
+4.6 Crisis/Disaster management
+4.7 Environment and development
+4.8 Energy crisis and energy conservation
+4.9 Pollution and waste management
+
+section (E) | Annex
+5.1 The Constitution of Nepal
+5.2 Fifteenth Plan
